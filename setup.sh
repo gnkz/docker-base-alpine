@@ -6,6 +6,6 @@ USERNAME=app
 
 adduser -s /bin/sh -u $USER_ID -D -g $USERNAME $USERNAME
 
-mkdir $APP_DIR
+mkdir -p $APP_DIR
 
 chown -R $USERNAME $APP_DIR
