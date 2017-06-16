@@ -6,7 +6,7 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 
 COMMAND=$(docker run -it --rm $USERNAME/$REPONAME:$TAG whoami)
 
-if [[ $COMMAND =~ ^user[\n]? ]]
+if [[ $COMMAND =~ ^app[\n]? ]]
 then
         echo "success"
         exit 0

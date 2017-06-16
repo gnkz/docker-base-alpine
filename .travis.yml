@@ -1,0 +1,26 @@
+sudo: required
+services:
+- docker
+branches:
+  except:
+  - develop
+  - "/^feature\\/.*$/"
+  - "/^release\\/.*$/"
+  - "/^support\\/.*$/"
+  - "/^hotfix\\/.*$/"
+env:
+  global:
+  - COMMIT: "${TRAVIS_COMMIT::8}"
+  - DOCKER_REPO: gnkz/base-dev
+  - CGO_ENABLED: 0
+  - GOOS: linux
+  - GOARCH: amd64
+  - secure: odtkyoRUY8trJ6b597StqQN6TyiLhSFDEaWRkWz+jU/DFihilU/dUw5L6rirZONXu74QR1MftoXHZyU839Hgoz1Olnj1nwL+JFgBi5i+DmRWsM2unZxz6ud+MbJ+uEyHIy+Nehy77nPMLhA3tK7pcr2bjDhMnivwH3szIrVP6TjJtAaj/ZibgUGGj8hBpzQ1DSYq6kKMSqZPDM08uyNt1TA0MLiYLthZpXzOWLLLTRPdeKvGtHqfQFZkLJLXW+13b4AzK4zKSUA+SlNPODkZkC6GGzz016MuphDCQ+zLocAnkt6/Tr1KHT6KuR+5BHVYhSH/pj1exdZSur396PfeC3Rd82wxIzQ4Qa81Lhvz/0rFT26dKEwdQaDoX6Asip4GUuP/ZUkfaVyRn25mRiXAl1+ukFOW3eMvHYVEHJOhxSbXnMY95k3TuTDYWwoQLOnwsRUShuqiLWwJZyxBK/V7a9M7+M/d7UOgBTgilNtsrB+LgvZWqGW884+DB75t+NkrtUY5GZXT9Aj2N4A/vrol2AsTQN94F+R6DJmkc1sxuEDp34A2xsajJMA00qQX6UsfXTSyzAfcss1TFtRIV+ocMYjyQK+Hv/Um5uu9G3eABgItPRNPqSrKnJnCwIBBYBTq7lKYMK/rXiIxBopFo3l9p5j8U15SVtFy3KlFt6eweDE=
+script:
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH;
+  fi`
+- docker build -t $DOCKER_REPO:$COMMIT -f Dockerfile .
+after_success:
+- docker login -u gnkz -p $DOCKER_PASS
+- docker tag $DOCKER_REPO:$COMMIT $DOCKER_REPO:$TAG
+- docker push $DOCKER_REPO
